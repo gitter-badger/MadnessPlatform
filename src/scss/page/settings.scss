@@ -1,0 +1,38 @@
+aside{
+	@include column(3);
+}
+article{
+	@include column(9);
+}
+
+@media (max-width: $screen-xl) {
+
+}
+
+@media (max-width: $screen-lg) {
+	aside{
+		@include column(4);
+	}
+	article{
+		@include column(8);
+	}
+}
+
+@media (max-width: $screen-md) {
+	aside{
+		@include column(5);
+	}
+	article{
+		@include column(7);
+	}
+}
+
+@media (max-width: $screen-sm) {
+	aside{
+		@include column(12);
+	}
+	article{
+		padding-top:30px;
+		@include column(12);
+	}
+}
