@@ -4,3 +4,6 @@ plugins/
 bower_components/
 *.sublime-workspace
 *.log
+src/js/build
+src/scss/build
+src/jade/build

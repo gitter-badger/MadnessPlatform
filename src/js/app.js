@@ -12,7 +12,7 @@ var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 
         }
         if (window.StatusBar) {
             // org.apache.cordova.statusbar required
-            StatusBar.styleDefault();
+            StatusBar.styleDefault()
         }
         if (window.cordova){
             $cordovaSplashscreen.hide();

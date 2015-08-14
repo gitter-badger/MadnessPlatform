@@ -9,32 +9,33 @@
     "html": {
         "dir": "html/",
         "file": "index.html",
+        "srcDir": "src/jade/",
+        "srcFile": "app.jade",
         "watch": [
-            "www/html/**/*.html",
-            "www/html/*.html",
-            "www/index.html"
+            "src/jade/**/*.jade",
+            "!src/jade/app.jade"
         ]
     },
     "css": {
         "dir": "css/",
-        "file": "app.css",
+        "file": "build.css",
         "srcDir": "src/scss/",
         "srcFile": "app.scss",
         "vars": {
+            "theme": {
+                "primary": "#387ef5",
+                "secondary": "#11c1f3"
+            },
             "light": "#ffffff !default",
             "stable": "#f8f8f8 !default",
-            "positive": "#387ef5 !default",
-            "calm": "#11c1f3 !default",
-            "balanced": "#0C5510 !default",
-            "energized": "#01B600 !default",
+            "positive": "$theme-primary !default",
+            "calm": "$theme-secondary !default",
+            "balanced": "#33cd5f !default",
+            "energized": "#ffc900 !default",
             "assertive": "#ef473a !default",
             "royal": "#886aea !default",
             "dark": "#444444 !default",
             "ionicons-font-path": "'../fonts' !default",
-            "theme": {
-                "primary": "$positive",
-                "secondary": "$calm"
-            },
             "screen": {
                 "xl": "1500px",
                 "lg": "1200px",
