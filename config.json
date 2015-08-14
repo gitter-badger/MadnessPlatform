@@ -1,6 +1,11 @@
 {
     "name": "MadnessPlatform",
+    "description": "The application stack used to develop at Madness Labs",
     "dir": "www/",
+    "mobile": false,
+    "local": true,
+    "url": "http://madnesslabs.net",
+    "version": "0.0.0-alpha",
     "db": {
         "firebase": {
             "host": "YOUR FIREBASE HERE"
@@ -51,25 +56,36 @@
         "dir": "js/",
         "file": "build.js",
         "srcDir": "src/js/",
-        "watch": [
-            "bower_components/ionic/js/ionic.bundle.js",      
-            "bower_components/ngCordova/dist/ng-cordova.js",
-            "bower_components/firebase/firebase.js",
-            "bower_components/angularfire/dist/angularfire.js",
-            "src/js/app.js",
-            "src/js/config.js",
-            "src/js/router.js",
-            "src/js/ctrl/**.js",
-            "src/js/fctry/**.js",
-            "src/js/drctv/**.js",
-            "src/js/srv/**.js"
-        ]
+        "watch": { 
+            "lib":[
+                "bower_components/ionic/js/ionic.bundle.js",      
+                "bower_components/ngCordova/dist/ng-cordova.js",
+                "bower_components/firebase/firebase.js",
+                "bower_components/angularfire/dist/angularfire.js",
+            ],
+            "app": [   
+                "src/js/app.js",
+                "src/js/config.js",
+                "src/js/router.js",
+                "src/js/ctrl/**.js",
+                "src/js/fctry/**.js",
+                "src/js/drctv/**.js",
+                "src/js/srv/**.js"
+            ]
+        }
     },
     "font": {
         "dir": "fonts/",
         "watch": [
             "bower_components/ionic/fonts/**",
             "bower_components/font-awesome/fonts/**"
+        ]
+    },
+    "img": {
+        "dir": "img/",
+        "favicon": "resources/icon.png",
+        "watch":[
+            "resources/**"
         ]
     }
 }

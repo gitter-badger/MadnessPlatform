@@ -6,6 +6,7 @@ var argv         = require('yargs').argv,
     changed      = require('gulp-changed'),
     concat       = require('gulp-concat'),
     es           = require('event-stream'),
+    favicons     = require('gulp-favicons'),
     fs           = require('fs'),
     gulp         = require('gulp'),
     intercept    = require('gulp-intercept'),
@@ -31,7 +32,13 @@ function setVars(){
     configJSON   = JSON.parse(fs.readFileSync(configFile)),
     // APP
     appName      = configJSON.name,
+    appDesc      = configJSON.description,
     appDir       = configJSON.dir,
+    appIcon      = configJSON.img.favicon,
+    appLocal     = configJSON.local,
+    appMobile    = configJSON.mobile,
+    appUrl       = configJSON.url,
+    appVersion   = configJSON.version,
     // CSS
     cssSrcDir    = configJSON.css.srcDir,
     cssSrcFile   = cssSrcDir+configJSON.css.srcFile,
@@ -50,11 +57,18 @@ function setVars(){
     htmlSrcDir   = configJSON.html.srcDir,
     htmlSrcFile  = configJSON.html.srcFile,
     htmlWatch    = configJSON.html.watch,
+    // IMG
+    iconDir      = 'icon/',
+    imgDir       = appDir+configJSON.img.dir,
+    imgIconDir   = imgDir+iconDir,
+    imgWatch     = configJSON.img.watch,
     // JS
     jsSrcDir     = configJSON.js.srcDir,
     jsDestDir    = appDir+configJSON.js.dir,
     jsDestFile   = configJSON.js.file,
-    jsWatch      = configJSON.js.watch;
+    jsWatchApp   = configJSON.js.watch.app,
+    jsWatchLib   = configJSON.js.watch.lib,
+    jsWatch      = jsWatchLib.concat(jsWatchApp);
 }
 setVars();
 
@@ -80,7 +94,7 @@ gulp.task('build', function(){
     runSequence('config', 'html-build', 'css', 'js-build', 'minify');
 });
 
-gulp.task('config', ['js-config', 'css-config']);
+gulp.task('config', ['favicon', 'js-config', 'css-config']);
 
 gulp.task('css', function(){
     return gulp.src(cssSrcFile)
@@ -136,6 +150,35 @@ gulp.task('css-min', function(){
         .pipe(gulp.dest(cssDestDir));
 });
 
+gulp.task('icon', function(){
+    runSequence('favicon', 'icon-copy', 'html-template'); 
+});
+
+gulp.task('icon-copy', function(){
+    return gulp.src(appIcon)
+        .pipe(gulp.dest(imgDir));
+});
+
+gulp.task('favicon', function(){
+    return gulp.src(htmlSrcDir+'favicon.jade')
+        .pipe(favicons({
+            files: {
+                src: appIcon,                
+                dest: '../../'+imgIconDir,
+                iconsPath: configJSON.img.dir+iconDir
+            },
+            settings:{
+                appName: appName,
+                appDescription: appDesc,
+                background: "#{css.vars.theme.primary}",
+                url: appUrl,
+                version: appVersion,
+                logging: true
+            }
+        }))
+        .pipe(gulp.dest(htmlSrcDir));
+});
+
 gulp.task('html', function () {
     return gulp.src(htmlWatch)
         .pipe(plumber({
@@ -187,9 +230,9 @@ gulp.task('html-template', function(){
         }));
 });
 
-gulp.task('js', function(){
+gulp.task('js-app', function(){
     errorCount = 0;
-    return gulp.src(jsSrcDir)
+    return gulp.src(jsWatchApp)
         .pipe(plumber({
             errorHandler: function(error) {
                 browserSync.notify(error.message, errorTimeout);
@@ -199,9 +242,12 @@ gulp.task('js', function(){
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(es.map(function (file, cb) {
+            console.log(file);
             if (!file.jshint.success) {
+                console.log('jshint no happy');
                 file.jshint.results.forEach(function(err){
                     if(err){
+                        console.log("error occured!");
                         errorCount++;
                         var msg = [
                             '<b>'+path.relative(__dirname, file.path)+'</b>',
@@ -212,6 +258,7 @@ gulp.task('js', function(){
                     }
                 });
             }else{
+                console.log("No Error Here!");
                 return cb(null, file);
             }
         })).on('end', function(){
@@ -274,8 +321,10 @@ gulp.task('watch', function(){
         runSequence('set-vars', 'config', 'html-build', 'js-build', 'css-build', 'bs-reload');
     });
     gulp.watch(cssWatch, ['css']);
-    gulp.watch(jsWatch, ['js']);
+    gulp.watch(jsWatchLib), ['js-lib']);
+    gulp.watch(jsWatchApp, ['js-app']);
     gulp.watch(htmlWatch, ['html']);
+    gulp.watch(imgWatch, ['icon']);
 });
 
 gulp.task('default', function(){

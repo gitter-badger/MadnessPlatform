@@ -9,7 +9,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.1.0-nightly-1505
+ * Ionic, v1.0.1-nightly-1500
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -25,7 +25,7 @@
 // build processes may have already created an ionic obj
 window.ionic = window.ionic || {};
 window.ionic.views = {};
-window.ionic.version = '1.1.0-nightly-1505';
+window.ionic.version = '1.0.1-nightly-1500';
 
 (function (ionic) {
 
@@ -45859,7 +45859,7 @@ angular.module('ui.router.state')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.1.0-nightly-1505
+ * Ionic, v1.0.1-nightly-1500
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -70094,7 +70094,7 @@ var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 
         }
         if (window.StatusBar) {
             // org.apache.cordova.statusbar required
-            StatusBar.styleDefault()
+            StatusBar.styleDefault();
         }
         if (window.cordova){
             $cordovaSplashscreen.hide();
