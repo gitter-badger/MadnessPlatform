@@ -61,7 +61,7 @@
                 "bower_components/ionic/js/ionic.bundle.js",      
                 "bower_components/ngCordova/dist/ng-cordova.js",
                 "bower_components/firebase/firebase.js",
-                "bower_components/angularfire/dist/angularfire.js",
+                "bower_components/angularfire/dist/angularfire.js"
             ],
             "app": [   
                 "src/js/app.js",
