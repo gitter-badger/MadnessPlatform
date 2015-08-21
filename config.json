@@ -61,16 +61,15 @@
                 "bower_components/ionic/js/ionic.bundle.js",      
                 "bower_components/ngCordova/dist/ng-cordova.js",
                 "bower_components/firebase/firebase.js",
-                "bower_components/angularfire/dist/angularfire.js",
+                "bower_components/angularfire/dist/angularfire.js"
             ],
             "app": [   
-                "src/js/app.js",
-                "src/js/config.js",
-                "src/js/router.js",
-                "src/js/ctrl/**.js",
-                "src/js/fctry/**.js",
-                "src/js/drctv/**.js",
-                "src/js/srv/**.js"
+                "build/js/app.js",
+                "build/js/config.js",
+                "build/js/ctrl/**.js",
+                "build/js/fctry/**.js",
+                "build/js/drctv/**.js",
+                "build/js/srv/**.js"
             ]
         }
     },

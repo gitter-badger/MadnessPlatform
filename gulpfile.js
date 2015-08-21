@@ -3,18 +3,22 @@
 var argv         = require('yargs').argv,
     bower        = require('gulp-bower'),
     browserSync  = require('browser-sync').create(),
+    cached       = require('gulp-cached'),
     changed      = require('gulp-changed'),
     concat       = require('gulp-concat'),
     es           = require('event-stream'),
     favicons     = require('gulp-favicons'),
     fs           = require('fs'),
     gulp         = require('gulp'),
+    gulpif       = require('gulp-if'),
+    html2jade    = require('gulp-html2jade'),
     intercept    = require('gulp-intercept'),
     jade         = require('gulp-jade'),
     jeditor      = require("gulp-json-editor"),
     jSass        = require('gulp-json-sass'),
     jshint       = require('gulp-jshint'),
     minifycss    = require('gulp-minify-css'),
+    ngClassify   = require('gulp-ng-classify'),
     ngConfig     = require('gulp-ng-config'),
     path         = require('path'),
     plumber      = require('gulp-plumber'),
@@ -22,6 +26,9 @@ var argv         = require('yargs').argv,
     rename       = require('gulp-rename'),
     runSequence  = require('run-sequence'),
     sass         = require('gulp-sass'),
+    sassInherit  = require('gulp-sass-inheritance'),
+    sourcemaps   = require('gulp-sourcemaps'),
+    ts           = require('gulp-typescript'),
     uglify       = require('gulp-uglify');
 
 
@@ -66,6 +73,9 @@ function setVars(){
     jsSrcDir     = configJSON.js.srcDir,
     jsDestDir    = appDir+configJSON.js.dir,
     jsDestFile   = configJSON.js.file,
+    jsBuildDir   = jsSrcDir+"build/",
+    jsBuildLib   = 'library.js',
+    jsBuildApp   = 'application.js',
     jsWatchApp   = configJSON.js.watch.app,
     jsWatchLib   = configJSON.js.watch.lib,
     jsWatch      = jsWatchLib.concat(jsWatchApp);
@@ -74,6 +84,38 @@ setVars();
 
  /////////////////////////////////////
 // TASKS
+
+gulp.task('ts', function(){
+    return gulp.src('src/ts/**/*.ts')
+        .pipe(plumber({
+            errorHandler: function(error) {
+                console.log(error.message);
+                browserSync.notify(error.message, errorTimeout);
+                this.emit('end');
+            }
+        }))
+        .pipe(ts({
+            outDir: 'build/js'
+        }))
+        .pipe(gulp.dest('build/js'));
+});
+
+gulp.task('ts-compile', function () {                 
+    var tsResult = gulp.src(['src/ts/**/*.ts', 'src/tsd/**/*.ts'])
+        .pipe(sourcemaps.init())
+        .pipe(ts({
+            "compilerOptions": {
+                "target": "es5",
+                "sourceMap": true
+            }
+        }));
+
+        tsResult.dts.pipe(gulp.dest('build/js'));
+        return tsResult.js
+            .pipe(sourcemaps.write('.'))
+            .pipe(gulp.dest('build/js'));
+});
+
 gulp.task('bower', function(){
     return bower();
 });
@@ -91,10 +133,10 @@ gulp.task('bs-reload', function(){
 });
 
 gulp.task('build', function(){
-    runSequence('config', 'html-build', 'css', 'js-build', 'minify');
+    runSequence('config', 'favicon', 'icon-copy', 'html-build', 'css-build', 'js-build', 'minify');
 });
 
-gulp.task('config', ['favicon', 'js-config', 'css-config']);
+gulp.task('config', ['js-config', 'css-config']);
 
 gulp.task('css', function(){
     return gulp.src(cssSrcFile)
@@ -105,6 +147,8 @@ gulp.task('css', function(){
                 this.emit('end');
             }
         }))
+        .pipe(gulpif(global.isWatching, cached('sass')))
+        .pipe(sassInherit({dir: cssSrcDir}))
         .pipe(sass())
         .pipe(rename(cssDestFile))
         .pipe(gulp.dest(cssDestDir))
@@ -114,17 +158,10 @@ gulp.task('css', function(){
 });
 
 gulp.task('css-build', function(){
-    return gulp.src(cssSrcFile)
-        .pipe(plumber({
-            errorHandler: function(error) {
-                console.log(error.message);
-                browserSync.notify(error.message, errorTimeout);
-                this.emit('end');
-            }
-        }))
+    return gulp.src("src/scss/**/*.scss")
+        .pipe(sassInherit({dir: 'src/scss'}))
         .pipe(sass())
-        .pipe(rename(cssDestFile))
-        .pipe(gulp.dest(cssDestDir));
+        .pipe(gulp.dest("src/scss/build"));
 });
 
 gulp.task('css-config', function(){
@@ -139,6 +176,14 @@ gulp.task('css-config', function(){
         }))
         .pipe(rename('variables.scss'))
         .pipe(gulp.dest(cssSrcDir));
+});
+
+gulp.task('css-new', function(){
+    return gulp.src('src/scss/**/*.scss')
+        .pipe(jSass({
+          sass: false
+        }))
+        .pipe(gulp.dest('src/scss/build'));
 });
 
 gulp.task('css-min', function(){
@@ -165,7 +210,7 @@ gulp.task('favicon', function(){
             files: {
                 src: appIcon,                
                 dest: '../../'+imgIconDir,
-                iconsPath: configJSON.img.dir+iconDir
+                iconsPath: imgIconDir
             },
             settings:{
                 appName: appName,
@@ -204,6 +249,12 @@ gulp.task('html-build', function(){
     var htmlFiles = htmlWatch;
     htmlFiles.pop();
     return gulp.src(htmlFiles)
+        .pipe(plumber({
+            errorHandler: function(error) {
+                browserSync.notify(error.message, errorTimeout);
+                this.emit('end');
+            }
+        }))
         .pipe(jade({
             locals: configJSON,
             pretty: true
@@ -215,6 +266,12 @@ gulp.task('html-build', function(){
             }
         }))
         .pipe(gulp.dest(htmlDir));
+});
+
+gulp.task('html-jade', function(){
+    gulp.src(htmlDir+'**/*.html')
+        .pipe(html2jade({nbspaces:4, donotencode: true, bodyless: true}))
+        .pipe(gulp.dest(htmlSrcDir));
 });
 
 gulp.task('html-template', function(){
@@ -230,7 +287,7 @@ gulp.task('html-template', function(){
         }));
 });
 
-gulp.task('js-app', function(){
+gulp.task('js', function(){
     errorCount = 0;
     return gulp.src(jsWatchApp)
         .pipe(plumber({
@@ -242,12 +299,9 @@ gulp.task('js-app', function(){
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(es.map(function (file, cb) {
-            console.log(file);
             if (!file.jshint.success) {
-                console.log('jshint no happy');
                 file.jshint.results.forEach(function(err){
                     if(err){
-                        console.log("error occured!");
                         errorCount++;
                         var msg = [
                             '<b>'+path.relative(__dirname, file.path)+'</b>',
@@ -258,26 +312,47 @@ gulp.task('js-app', function(){
                     }
                 });
             }else{
-                console.log("No Error Here!");
                 return cb(null, file);
             }
         })).on('end', function(){
             if(errorCount === 0){
-                runSequence('js-build', 'bs-reload');
+                runSequence('js-app', 'js-concat', 'bs-reload');
             }
         });
 });
 
-gulp.task('js-build', function(){
-    return gulp.src(jsWatch)
+gulp.task('js-app', function(){
+    return gulp.src(jsWatchApp)
         .pipe(plumber({
             errorHandler: function(error) {
                 console.log(error.message);
                 this.emit('end');
             }
         }))
+        .pipe(concat(jsBuildApp))
+        .pipe(gulp.dest(jsBuildDir));
+});
+
+gulp.task('js-lib', function(){
+    return gulp.src(jsWatchLib)
+        .pipe(plumber({
+            errorHandler: function(error) {
+                console.log(error.message);
+                this.emit('end');
+            }
+        }))
+        .pipe(concat(jsBuildLib))
+        .pipe(gulp.dest(jsBuildDir));
+});
+ 
+gulp.task('js-concat', function(){
+    return gulp.src([jsBuildDir+jsBuildLib, jsBuildDir+jsBuildApp])
         .pipe(concat(jsDestFile))
         .pipe(gulp.dest(jsDestDir));
+});
+
+gulp.task('js-build', function(){
+    runSequence('js-lib', 'js-app', 'js-concat');
 });
 
 gulp.task('js-config', function(){
@@ -317,12 +392,15 @@ gulp.task('minify', function(){
 gulp.task('set-vars', setVars);
 
 gulp.task('watch', function(){
+    global.isWatching = true;
     gulp.watch(configFile, function(){
-        runSequence('set-vars', 'config', 'html-build', 'js-build', 'css-build', 'bs-reload');
+        runSequence('set-vars', 'config', 'html-build', 'js-build', 'css-build');
     });
     gulp.watch(cssWatch, ['css']);
-    gulp.watch(jsWatchLib), ['js-lib']);
-    gulp.watch(jsWatchApp, ['js-app']);
+    gulp.watch(jsWatchLib, function(){
+        runSequence('js-lib', 'js-concat', 'bs-reload');
+    });
+    gulp.watch(jsWatchApp, ['js']);
     gulp.watch(htmlWatch, ['html']);
     gulp.watch(imgWatch, ['icon']);
 });

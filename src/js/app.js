@@ -21,5 +21,5 @@ var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 
 })
 
 .controller('appCtrl', function($scope) {
-
+    
 });

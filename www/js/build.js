@@ -70103,7 +70103,7 @@ var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 
 })
 
 .controller('appCtrl', function($scope) {
-
+    
 });
 angular.module('MadnessPlatform.config', [])
 .constant('name', "MadnessPlatform")
