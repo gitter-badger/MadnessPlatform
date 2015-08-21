@@ -2,7 +2,7 @@
 	"version": "0.0.0-alpha",
 	"api_version": 1,
 	"layout": {
-		"logo": "img/icon/yandex-browser-50x50.png",
+		"logo": "www/img/icon/yandex-browser-50x50.png",
 		"color": "#{css.vars.theme.primary}",
 		"show_title": true
 	}

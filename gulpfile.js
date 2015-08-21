@@ -138,7 +138,7 @@ gulp.task('build', function(){
 
 gulp.task('config', ['js-config', 'css-config']);
 
-gulp.task('css', function(){
+gulp.task('css-build', function(){
     return gulp.src(cssSrcFile)
         .pipe(plumber({
             errorHandler: function(error) {
@@ -155,13 +155,6 @@ gulp.task('css', function(){
         .pipe(browserSync.reload({
             stream: true
         }));
-});
-
-gulp.task('css-build', function(){
-    return gulp.src("src/scss/**/*.scss")
-        .pipe(sassInherit({dir: 'src/scss'}))
-        .pipe(sass())
-        .pipe(gulp.dest("src/scss/build"));
 });
 
 gulp.task('css-config', function(){
@@ -344,7 +337,7 @@ gulp.task('js-lib', function(){
         .pipe(concat(jsBuildLib))
         .pipe(gulp.dest(jsBuildDir));
 });
- 
+
 gulp.task('js-concat', function(){
     return gulp.src([jsBuildDir+jsBuildLib, jsBuildDir+jsBuildApp])
         .pipe(concat(jsDestFile))
@@ -396,7 +389,7 @@ gulp.task('watch', function(){
     gulp.watch(configFile, function(){
         runSequence('set-vars', 'config', 'html-build', 'js-build', 'css-build');
     });
-    gulp.watch(cssWatch, ['css']);
+    gulp.watch(cssWatch, ['css-build']);
     gulp.watch(jsWatchLib, function(){
         runSequence('js-lib', 'js-concat', 'bs-reload');
     });

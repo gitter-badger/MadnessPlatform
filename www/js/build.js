@@ -70080,116 +70080,66 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 'ngCordova', 'firebase'])
-
-.run(function($ionicPlatform, $cordovaSplashscreen, $ionicSideMenuDelegate) {
-    $ionicPlatform.ready(function() {
-        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
-        if (window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        }
-        if(window.navigator && window.navigator.splashscreen) {
-            window.plugins.orientationLock.unlock();
-        }
-        if (window.StatusBar) {
-            // org.apache.cordova.statusbar required
-            StatusBar.styleDefault();
-        }
-        if (window.cordova){
-            $cordovaSplashscreen.hide();
-        }
-    });
-})
-
-.controller('appCtrl', function($scope) {
-    
-});
-angular.module('MadnessPlatform.config', [])
-.constant('name', "MadnessPlatform")
-.constant('dir', "www/")
-.constant('db', {"firebase":{"host":"YOUR FIREBASE HERE"}})
-.constant('html', {"dir":"html/","file":"index.html","srcDir":"src/jade/","srcFile":"app.jade","watch":["src/jade/**/*.jade","!src/jade/app.jade"]})
-.constant('css', {"dir":"css/","file":"build.css","srcDir":"src/scss/","srcFile":"app.scss","vars":{"theme":{"primary":"#387ef5","secondary":"#11c1f3"},"light":"#ffffff !default","stable":"#f8f8f8 !default","positive":"$theme-primary !default","calm":"$theme-secondary !default","balanced":"#33cd5f !default","energized":"#ffc900 !default","assertive":"#ef473a !default","royal":"#886aea !default","dark":"#444444 !default","ionicons-font-path":"'../fonts' !default","screen":{"xl":"1500px","lg":"1200px","md":"992px","sm":"768px"}},"watch":["src/scss/**/*.scss"]})
-.constant('js', {"dir":"js/","file":"build.js","srcDir":"src/js/","watch":["bower_components/ionic/js/ionic.bundle.js","bower_components/ngCordova/dist/ng-cordova.js","bower_components/firebase/firebase.js","bower_components/angularfire/dist/angularfire.js","src/js/app.js","src/js/config.js","src/js/router.js","src/js/ctrl/**.js","src/js/fctry/**.js","src/js/drctv/**.js","src/js/srv/**.js"]})
-.constant('font', {"dir":"fonts/","watch":["bower_components/ionic/fonts/**","bower_components/font-awesome/fonts/**"]});
-
-app.config(function($stateProvider, $urlRouterProvider) {
-    $stateProvider
-    .state('home', {
-        url: '/home',
-        templateUrl: 'html/page/home.html',
-        controller: 'homeCtrl'
-    })
-    .state('settings', {
-        url: '/settings',
-        templateUrl: 'html/page/settings.html',
-        controller: 'settingsCtrl'
-    });
-    /*.state('tab', {
-        url: "/tab",
-        abstract: true,
-        templateUrl: "html/template.html"
-    })
-    .state('tab.search', {
-        url: '/search',
-        views: {
-            'tab-search': {
-                templateUrl: 'html/page/search.html',
-                controller:  'SearchCtrl'
+(function () {
+    var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 'ngCordova', 'firebase']);
+    app.config(['$routeProvider', function ($stateProvider, $urlRouterProvider) {
+            $stateProvider
+                .state('home', {
+                url: '/home',
+                templateUrl: 'html/page/home.html',
+                controller: 'homeController'
+            })
+                .state('settings', {
+                url: '/settings',
+                templateUrl: 'html/page/settings.html',
+                controller: 'settingsController'
+            });
+            $urlRouterProvider.otherwise('/home');
+        }])
+        .run(function ($ionicPlatform, $cordovaSplashscreen, $ionicSideMenuDelegate) {
+        $ionicPlatform.ready(function () {
+            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+            // for form inputs)
+            if (window.cordova && window.cordova.plugins.Keyboard) {
+                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
+            if (window.cordova) {
+                $cordovaSplashscreen.hide();
+            }
+        });
+    });
+})();
+
+//# sourceMappingURL=app.js.map
+var MadnessPlatform;
+(function (MadnessPlatform) {
+    'use strict';
+    var homeController = (function () {
+        //customers: ICustomer[] = null;
+        //static $inject = ['demoApp.dataService'];
+        function homeController() {
+            // ON PAGE LOAD
         }
-    })*/
+        return homeController;
+    })();
+    angular.module('MadnessPlatform')
+        .controller('MadnessPlatform.homeController', homeController);
+})(MadnessPlatform || (MadnessPlatform = {}));
 
-    $urlRouterProvider.otherwise('/home');
-});
+//# sourceMappingURL=../ctrl/home.js.map
+var MadnessPlatform;
+(function (MadnessPlatform) {
+    'use strict';
+    var settingsController = (function () {
+        //customers: ICustomer[] = null;
+        //static $inject = ['demoApp.dataService'];
+        function settingsController() {
+            // ON PAGE LOAD
+        }
+        return settingsController;
+    })();
+    angular.module('MadnessPlatform')
+        .controller('MadnessPlatform.settingsController', settingsController);
+})(MadnessPlatform || (MadnessPlatform = {}));
 
-app.controller('homeCtrl', function($scope) {
-
-});
-app.controller('settingsCtrl', function($scope) {
-
-});
-app.factory('rest', function($http, $q){
-	var rest = {};
-
-	rest.get = function(rUrl, rParams){
-		if(!rParams){
-			rParams = false;
-		}
-		var deferred = $q.defer();
-		$http.get(rUrl,{params: rParams},{
-			headers: {
-			    'Content-type': 'application/json'
-			}
-		})
-		.success(function(data, status, headers, config) {
-			deferred.resolve(data);
-		})
-		.error(function(data, status, headers, config) {
-			console.log("Failed to Get Data!");
-		});
-		return deferred.promise;
-	};
-
-	rest.post = function(rUrl, rParams){
-		if(!rParams){
-			rParams = false;
-		}
-		var deferred = $q.defer();
-		$http.post(rUrl, {params: rParams},{
-			headers: {
-			    'Content-type': 'application/json'
-			}
-		})
-		.success(function(data, status, headers, config) {
-			deferred.resolve(data);
-		})
-		.error(function(data, status, headers, config) {
-			console.log("Failed to Get Data from: "+rUrl);
-		});
-		return deferred.promise;
-	};
-	
-	return rest;
-});		
+//# sourceMappingURL=../ctrl/settings.js.map
