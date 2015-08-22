@@ -25,7 +25,6 @@
         "dir": "css/",
         "file": "build.css",
         "srcDir": "src/scss/",
-        "srcFile": "app.scss",
         "vars": {
             "theme": {
                 "primary": "#387ef5",
@@ -48,14 +47,25 @@
                 "sm": "768px"
             }
         },
-        "watch": [
-            "src/scss/**/*.scss"
-        ]
+        "watch": {
+            "lib":[
+                "bower_components/ionic/scss/ionic.scss",
+                "bower_components/font-awesome/scss/font-awesome.scss",
+                "bower_components/geoffgraham.animate.scss/animate.scss",
+                "src/scss/library/**/*.scss"
+            ],
+            "app":[
+                "src/scss/variables.scss",
+                "src/scss/mixin/**/*.scss",
+                "src/scss/element/**/*.scss",
+                "src/scss/page/**/*.scss"
+            ]
+        }
     },
     "js": {
         "dir": "js/",
         "file": "build.js",
-        "srcDir": "src/js/",
+        "srcDir": "src/ts/",
         "watch": { 
             "lib":[
                 "bower_components/ionic/js/ionic.bundle.js",      

@@ -70082,24 +70082,22 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
 
 (function () {
     var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 'ngCordova', 'firebase']);
-    app.config(['$routeProvider', function ($stateProvider, $urlRouterProvider) {
-            $stateProvider
-                .state('home', {
-                url: '/home',
-                templateUrl: 'html/page/home.html',
-                controller: 'homeController'
-            })
-                .state('settings', {
-                url: '/settings',
-                templateUrl: 'html/page/settings.html',
-                controller: 'settingsController'
-            });
-            $urlRouterProvider.otherwise('/home');
-        }])
+    app.config(function ($stateProvider, $urlRouterProvider) {
+        $stateProvider
+            .state('home', {
+            url: '/home',
+            templateUrl: 'html/page/home.html',
+            controller: 'MadnessPlatform.homeController'
+        })
+            .state('settings', {
+            url: '/settings',
+            templateUrl: 'html/page/settings.html',
+            controller: 'MadnessPlatform.settingsController'
+        });
+        $urlRouterProvider.otherwise('/home');
+    })
         .run(function ($ionicPlatform, $cordovaSplashscreen, $ionicSideMenuDelegate) {
         $ionicPlatform.ready(function () {
-            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-            // for form inputs)
             if (window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
@@ -70111,6 +70109,34 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
 })();
 
 //# sourceMappingURL=app.js.map
+angular.module('MadnessPlatform.config', [])
+.constant('name', "MadnessPlatform")
+.constant('description', "The application stack used to develop at Madness Labs")
+.constant('dir', "www/")
+.constant('mobile', false)
+.constant('local', true)
+.constant('url', "http://madnesslabs.net")
+.constant('version', "0.0.0-alpha")
+.constant('db', {"firebase":{"host":"YOUR FIREBASE HERE"}})
+.constant('html', {"dir":"html/","file":"index.html","srcDir":"src/jade/","srcFile":"app.jade","watch":["src/jade/**/*.jade","!src/jade/app.jade"]})
+.constant('css', {"dir":"css/","file":"build.css","srcDir":"src/scss/","srcFile":"app.scss","vars":{"theme":{"primary":"#387ef5","secondary":"#11c1f3"},"light":"#ffffff !default","stable":"#f8f8f8 !default","positive":"$theme-primary !default","calm":"$theme-secondary !default","balanced":"#33cd5f !default","energized":"#ffc900 !default","assertive":"#ef473a !default","royal":"#886aea !default","dark":"#444444 !default","ionicons-font-path":"'../fonts' !default","screen":{"xl":"1500px","lg":"1200px","md":"992px","sm":"768px"}},"watch":["src/scss/**/*.scss"]})
+.constant('js', {"dir":"js/","file":"build.js","srcDir":"src/js/","watch":{"lib":["bower_components/ionic/js/ionic.bundle.js","bower_components/ngCordova/dist/ng-cordova.js","bower_components/firebase/firebase.js","bower_components/angularfire/dist/angularfire.js"],"app":["build/js/app.js","build/js/config.js","build/js/ctrl/**.js","build/js/fctry/**.js","build/js/drctv/**.js","build/js/srv/**.js"]}})
+.constant('font', {"dir":"fonts/","watch":["bower_components/ionic/fonts/**","bower_components/font-awesome/fonts/**"]})
+.constant('img', {"dir":"img/","favicon":"resources/icon.png","watch":["resources/**"]});
+
+var MadnessPlatform;
+(function (MadnessPlatform) {
+    'use strict';
+    var applicationController = (function () {
+        function applicationController() {
+        }
+        return applicationController;
+    })();
+    angular.module('MadnessPlatform')
+        .controller('MadnessPlatform.applicationController', applicationController);
+})(MadnessPlatform || (MadnessPlatform = {}));
+
+//# sourceMappingURL=../ctrl/application.js.map
 var MadnessPlatform;
 (function (MadnessPlatform) {
     'use strict';

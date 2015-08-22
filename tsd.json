@@ -14,9 +14,6 @@
     "angularjs/angular-animate.d.ts": {
       "commit": "977da240f263e88215a27cb44f2e31524ca07135"
     },
-    "jquery/jquery.d.ts": {
-      "commit": "977da240f263e88215a27cb44f2e31524ca07135"
-    },
     "cordova/cordova.d.ts": {
       "commit": "8f081073e6cb416f901b272810d8b04d6e01c9e0"
     },
