@@ -1,15 +1,15 @@
 module MadnessPlatform {
     'use strict';
 
-    class homeController {
+    class HomeController {
         //customers: ICustomer[] = null;
 
         //static $inject = ['demoApp.dataService'];
         constructor() {
-            // ON PAGE LOAD
+            // ON HOME PAGE LOAD
         }
     }
 
     angular.module('MadnessPlatform')
-           .controller('MadnessPlatform.homeController', homeController);
+           .controller('MadnessPlatform.HomeController', HomeController);
 }

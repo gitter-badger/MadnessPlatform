@@ -2,17 +2,17 @@
 
     var app = angular.module('MadnessPlatform', ['MadnessPlatform.config', 'ionic', 'ngCordova', 'firebase']);
 
-    app.config(function($stateProvider, $urlRouterProvider){
+    app.config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
         .state('home', {
             url: '/home',
             templateUrl: 'html/page/home.html',
-            controller: 'MadnessPlatform.homeController'
+            controller: 'MadnessPlatform.HomeController'
         })
         .state('settings', {
             url: '/settings',
             templateUrl: 'html/page/settings.html',
-            controller: 'MadnessPlatform.settingsController'
+            controller: 'MadnessPlatform.SettingsController'
         });
 
         $urlRouterProvider.otherwise('/home');
@@ -22,7 +22,7 @@
             if (window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
-            if (window.cordova){
+            if (window.cordova) {
                 $cordovaSplashscreen.hide();
             }
         });

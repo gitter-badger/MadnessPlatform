@@ -1,15 +1,12 @@
 module MadnessPlatform {
     'use strict';
 
-    class settingsController {
-        //customers: ICustomer[] = null;
-
-        //static $inject = ['demoApp.dataService'];
+    class SettingsController {
         constructor() {
-            // ON PAGE LOAD
+            //ON SETTINGS PAGE LOAD
         }
     }
 
     angular.module('MadnessPlatform')
-           .controller('MadnessPlatform.settingsController', settingsController);
+        .controller('MadnessPlatform.SettingsController', SettingsController);
 }

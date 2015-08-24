@@ -1,7 +1,7 @@
 {
     "name": "MadnessPlatform",
     "description": "The application stack used to develop at Madness Labs",
-    "dir": "www/",
+    "root": "www/",
     "mobile": false,
     "local": true,
     "url": "http://madnesslabs.net",
@@ -47,41 +47,43 @@
                 "sm": "768px"
             }
         },
-        "watch": {
-            "lib":[
-                "bower_components/ionic/scss/ionic.scss",
-                "bower_components/font-awesome/scss/font-awesome.scss",
-                "bower_components/geoffgraham.animate.scss/animate.scss",
-                "src/scss/library/**/*.scss"
-            ],
-            "app":[
-                "src/scss/variables.scss",
-                "src/scss/mixin/**/*.scss",
-                "src/scss/element/**/*.scss",
-                "src/scss/page/**/*.scss"
-            ]
-        }
+        "libraries":[
+            "bower_components/ionic/scss/ionic.scss",
+            "bower_components/font-awesome/scss/font-awesome.scss",
+            "bower_components/geoffgraham.animate.scss/animate.scss",
+            "src/scss/library/**/*.scss"
+        ],
+        "build":[
+            "build/css/variables.css",
+            "build/css/mixin/**/*.css",
+            "build/css/element/**/*.css",
+            "build/css/page/**/*.css"
+        ],
+        "watch": [
+            "src/scss/**/*.scss"
+        ]
     },
     "js": {
         "dir": "js/",
         "file": "build.js",
         "srcDir": "src/ts/",
-        "watch": { 
-            "lib":[
-                "bower_components/ionic/js/ionic.bundle.js",      
-                "bower_components/ngCordova/dist/ng-cordova.js",
-                "bower_components/firebase/firebase.js",
-                "bower_components/angularfire/dist/angularfire.js"
-            ],
-            "app": [   
-                "build/js/app.js",
-                "build/js/config.js",
-                "build/js/ctrl/**.js",
-                "build/js/fctry/**.js",
-                "build/js/drctv/**.js",
-                "build/js/srv/**.js"
-            ]
-        }
+        "libraries":[
+            "bower_components/ionic/js/ionic.bundle.js",      
+            "bower_components/ngCordova/dist/ng-cordova.js",
+            "bower_components/firebase/firebase.js",
+            "bower_components/angularfire/dist/angularfire.js"
+        ],
+        "build": [ 
+            "build/js/app.js",
+            "build/js/config.js",
+            "build/js/ctrl/**/*.js",
+            "build/js/fctry/**/*.js",
+            "build/js/drctv/**/*.js",
+            "build/js/srv/**/*.js"
+        ],
+        "watch": [
+            "src/ts/**/*.ts"
+        ]
     },
     "font": {
         "dir": "fonts/",

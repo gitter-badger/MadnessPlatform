@@ -9,7 +9,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.0.1-nightly-1500
+ * Ionic, v1.1.0-nightly-1505
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -25,7 +25,7 @@
 // build processes may have already created an ionic obj
 window.ionic = window.ionic || {};
 window.ionic.views = {};
-window.ionic.version = '1.0.1-nightly-1500';
+window.ionic.version = '1.1.0-nightly-1505';
 
 (function (ionic) {
 
@@ -45859,7 +45859,7 @@ angular.module('ui.router.state')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.0.1-nightly-1500
+ * Ionic, v1.1.0-nightly-1505
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -70087,12 +70087,12 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
             .state('home', {
             url: '/home',
             templateUrl: 'html/page/home.html',
-            controller: 'MadnessPlatform.homeController'
+            controller: 'MadnessPlatform.HomeController'
         })
             .state('settings', {
             url: '/settings',
             templateUrl: 'html/page/settings.html',
-            controller: 'MadnessPlatform.settingsController'
+            controller: 'MadnessPlatform.SettingsController'
         });
         $urlRouterProvider.otherwise('/home');
     })
@@ -70108,64 +70108,45 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     });
 })();
 
-//# sourceMappingURL=app.js.map
 angular.module('MadnessPlatform.config', [])
 .constant('name', "MadnessPlatform")
 .constant('description', "The application stack used to develop at Madness Labs")
-.constant('dir', "www/")
+.constant('root', "www/")
 .constant('mobile', false)
 .constant('local', true)
 .constant('url', "http://madnesslabs.net")
 .constant('version', "0.0.0-alpha")
 .constant('db', {"firebase":{"host":"YOUR FIREBASE HERE"}})
 .constant('html', {"dir":"html/","file":"index.html","srcDir":"src/jade/","srcFile":"app.jade","watch":["src/jade/**/*.jade","!src/jade/app.jade"]})
-.constant('css', {"dir":"css/","file":"build.css","srcDir":"src/scss/","srcFile":"app.scss","vars":{"theme":{"primary":"#387ef5","secondary":"#11c1f3"},"light":"#ffffff !default","stable":"#f8f8f8 !default","positive":"$theme-primary !default","calm":"$theme-secondary !default","balanced":"#33cd5f !default","energized":"#ffc900 !default","assertive":"#ef473a !default","royal":"#886aea !default","dark":"#444444 !default","ionicons-font-path":"'../fonts' !default","screen":{"xl":"1500px","lg":"1200px","md":"992px","sm":"768px"}},"watch":["src/scss/**/*.scss"]})
-.constant('js', {"dir":"js/","file":"build.js","srcDir":"src/js/","watch":{"lib":["bower_components/ionic/js/ionic.bundle.js","bower_components/ngCordova/dist/ng-cordova.js","bower_components/firebase/firebase.js","bower_components/angularfire/dist/angularfire.js"],"app":["build/js/app.js","build/js/config.js","build/js/ctrl/**.js","build/js/fctry/**.js","build/js/drctv/**.js","build/js/srv/**.js"]}})
+.constant('css', {"dir":"css/","file":"build.css","srcDir":"src/scss/","vars":{"theme":{"primary":"#387ef5","secondary":"#11c1f3"},"light":"#ffffff !default","stable":"#f8f8f8 !default","positive":"$theme-primary !default","calm":"$theme-secondary !default","balanced":"#33cd5f !default","energized":"#ffc900 !default","assertive":"#ef473a !default","royal":"#886aea !default","dark":"#444444 !default","ionicons-font-path":"'../fonts' !default","screen":{"xl":"1500px","lg":"1200px","md":"992px","sm":"768px"}},"libraries":["bower_components/ionic/scss/ionic.scss","bower_components/font-awesome/scss/font-awesome.scss","bower_components/geoffgraham.animate.scss/animate.scss","src/scss/library/**/*.scss"],"build":["build/css/variables.css","build/css/mixin/**/*.css","build/css/element/**/*.css","build/css/page/**/*.css"],"watch":["src/scss/**/*.scss"]})
+.constant('js', {"dir":"js/","file":"build.js","srcDir":"src/ts/","libraries":["bower_components/ionic/js/ionic.bundle.js","bower_components/ngCordova/dist/ng-cordova.js","bower_components/firebase/firebase.js","bower_components/angularfire/dist/angularfire.js"],"build":["build/js/app.js","build/js/config.js","build/js/ctrl/**/*.js","build/js/fctry/**/*.js","build/js/drctv/**/*.js","build/js/srv/**/*.js"],"watch":["src/ts/**/*.ts"]})
 .constant('font', {"dir":"fonts/","watch":["bower_components/ionic/fonts/**","bower_components/font-awesome/fonts/**"]})
 .constant('img', {"dir":"img/","favicon":"resources/icon.png","watch":["resources/**"]});
 
 var MadnessPlatform;
 (function (MadnessPlatform) {
     'use strict';
-    var applicationController = (function () {
-        function applicationController() {
+    var HomeController = (function () {
+        //customers: ICustomer[] = null;
+        //static $inject = ['demoApp.dataService'];
+        function HomeController() {
+            // ON HOME PAGE LOAD
         }
-        return applicationController;
+        return HomeController;
     })();
     angular.module('MadnessPlatform')
-        .controller('MadnessPlatform.applicationController', applicationController);
+        .controller('MadnessPlatform.HomeController', HomeController);
 })(MadnessPlatform || (MadnessPlatform = {}));
 
-//# sourceMappingURL=../ctrl/application.js.map
 var MadnessPlatform;
 (function (MadnessPlatform) {
     'use strict';
-    var homeController = (function () {
-        //customers: ICustomer[] = null;
-        //static $inject = ['demoApp.dataService'];
-        function homeController() {
-            // ON PAGE LOAD
+    var SettingsController = (function () {
+        function SettingsController() {
+            //ON SETTINGS PAGE LOAD
         }
-        return homeController;
+        return SettingsController;
     })();
     angular.module('MadnessPlatform')
-        .controller('MadnessPlatform.homeController', homeController);
+        .controller('MadnessPlatform.SettingsController', SettingsController);
 })(MadnessPlatform || (MadnessPlatform = {}));
-
-//# sourceMappingURL=../ctrl/home.js.map
-var MadnessPlatform;
-(function (MadnessPlatform) {
-    'use strict';
-    var settingsController = (function () {
-        //customers: ICustomer[] = null;
-        //static $inject = ['demoApp.dataService'];
-        function settingsController() {
-            // ON PAGE LOAD
-        }
-        return settingsController;
-    })();
-    angular.module('MadnessPlatform')
-        .controller('MadnessPlatform.settingsController', settingsController);
-})(MadnessPlatform || (MadnessPlatform = {}));
-
-//# sourceMappingURL=../ctrl/settings.js.map
