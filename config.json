@@ -2,6 +2,7 @@
     "name": "MadnessPlatform",
     "description": "The application stack used to develop at Madness Labs",
     "root": "www/",
+    "templates": "templates/",
     "mobile": false,
     "local": true,
     "url": "http://madnesslabs.net",
@@ -40,27 +41,32 @@
             "royal": "#886aea !default",
             "dark": "#444444 !default",
             "ionicons-font-path": "'../fonts' !default",
+            "grid":{
+                "columns": "12",
+                "column-width": "60px",
+                "gutter": "20px",
+                "width": "100%"
+            },
             "screen": {
                 "xl": "1500px",
                 "lg": "1200px",
                 "md": "992px",
-                "sm": "768px"
+                "sm": "768px",
+                "xs": "480px"
             }
         },
         "libraries":[
             "bower_components/ionic/scss/ionic.scss",
-            "bower_components/font-awesome/scss/font-awesome.scss",
-            "bower_components/geoffgraham.animate.scss/animate.scss",
-            "src/scss/library/**/*.scss"
+            "bower_components/font-awesome/scss/font-awesome.scss"
         ],
         "build":[
-            "build/css/variables.css",
-            "build/css/mixin/**/*.css",
-            "build/css/element/**/*.css",
+            "build/css/libraries.css",
+            "build/css/layout/**/*.css",
             "build/css/page/**/*.css"
         ],
         "watch": [
-            "src/scss/**/*.scss"
+            "src/scss/**/*.scss",
+            "!src/scss/libraries.scss"
         ]
     },
     "js": {
@@ -68,7 +74,7 @@
         "file": "build.js",
         "srcDir": "src/ts/",
         "libraries":[
-            "bower_components/ionic/js/ionic.bundle.js",      
+            "bower_components/ionic/release/js/ionic.bundle.js",      
             "bower_components/ngCordova/dist/ng-cordova.js",
             "bower_components/firebase/firebase.js",
             "bower_components/angularfire/dist/angularfire.js"
@@ -76,10 +82,10 @@
         "build": [ 
             "build/js/app.js",
             "build/js/config.js",
-            "build/js/ctrl/**/*.js",
-            "build/js/fctry/**/*.js",
-            "build/js/drctv/**/*.js",
-            "build/js/srv/**/*.js"
+            "build/js/controller/**/*.js",
+            "build/js/factory/**/*.js",
+            "build/js/directive/**/*.js",
+            "build/js/service/**/*.js"
         ],
         "watch": [
             "src/ts/**/*.ts"

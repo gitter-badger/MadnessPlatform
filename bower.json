@@ -2,13 +2,9 @@
   "name": "MadnessPlatform",
   "private": "true",
   "devDependencies": {
-    "ionic": "driftyco/ionic-bower#master",
-    "ionic-ion-swipe-cards": "*",
+    "ionic": "~1.1.0",
     "font-awesome": "~4.4.0",
-	  "animate.css": "~3.2.0",
-    "geoffgraham.animate.scss": "*",
-    "ionicons": "~2.0.1",
-    "ngCordova": "~0.1.12-alpha",
-    "angularfire": "~1.0.0"
+    "ngCordova": "~0.1.20-alpha",
+    "angularfire": "~1.1.2"
   }
 }

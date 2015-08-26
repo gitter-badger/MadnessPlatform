@@ -1,34 +1,30 @@
  /////////////////////////////////////
 // REQUIRES
-var argv         = require('yargs').argv,
+var addsrc       = require('gulp-add-src'),
+    argv         = require('yargs').argv,
     bower        = require('gulp-bower'),
     browserSync  = require('browser-sync').create(),
     cached       = require('gulp-cached'),
-    changed      = require('gulp-changed'),
     concat       = require('gulp-concat'),
-    es           = require('event-stream'),
+    data         = require('gulp-data'),
     favicons     = require('gulp-favicons'),
     fs           = require('fs'),
     gulp         = require('gulp'),
     gulpif       = require('gulp-if'),
-    html2jade    = require('gulp-html2jade'),
     intercept    = require('gulp-intercept'),
     jade         = require('gulp-jade'),
     jeditor      = require("gulp-json-editor"),
     jSass        = require('gulp-json-sass'),
-    jshint       = require('gulp-jshint'),
     minifycss    = require('gulp-minify-css'),
-    ngClassify   = require('gulp-ng-classify'),
     ngConfig     = require('gulp-ng-config'),
     path         = require('path'),
     plumber      = require('gulp-plumber'),
     prompt       = require('gulp-prompt'),
     rename       = require('gulp-rename'),
+    replace      = require('gulp-replace'),
     runSequence  = require('run-sequence'),
     sass         = require('gulp-sass'),
-    sassGraph    = require('gulp-sass-graph'),
-    sassInherit  = require('gulp-sass-inheritance'),
-    sourcemaps   = require('gulp-sourcemaps'),
+    sassLint     = require('gulp-sass-lint'),
     superstatic  = require('superstatic'),
     ts           = require('gulp-typescript'),
     tslint       = require('gulp-tslint'),
@@ -72,7 +68,7 @@ function setVars(){
     htmlSrcFile  = configJSON.html.srcFile;
     htmlWatch    = configJSON.html.watch;
     // IMG
-    iconDir      = 'icon/',
+    iconDir      = 'icon/';
     imgDir       = appDir+configJSON.img.dir;
     imgIconDir   = imgDir+iconDir;
     imgWatch     = configJSON.img.watch;
@@ -85,13 +81,19 @@ function setVars(){
     jsBuildLib   = 'library.js';
     jsLib        = configJSON.js.libraries;
     jsWatch      = configJSON.js.watch;
+    // TEMPLATES
+    tmplDir      = configJSON.templates;
 }
 setVars();
 
  /////////////////////////////////////
 // TASKS
 gulp.task('bower', function(){
-    return bower();
+    return bower({ cmd: 'install'});
+});
+
+gulp.task('bower-update', function(){
+    return bower({ cmd: 'update'});
 });
 
 gulp.task('build', function(){
@@ -99,6 +101,10 @@ gulp.task('build', function(){
 });
 
 gulp.task('config', ['js-config', 'css-config']);
+
+gulp.task('css-build', function(){
+    runSequence('css-config', 'css-import', 'css-lib', 'css-compile', 'css-concat');
+});
 
 gulp.task('css-compile', function(){
     return gulp.src(cssWatch)
@@ -110,12 +116,15 @@ gulp.task('css-compile', function(){
             }
         }))
         .pipe(gulpif(global.isWatching, cached('css-compile')))
-        .pipe(sassInherit({dir: cssSrcDir}))
         .pipe(sass())
-        .pipe(gulp.dest(cssBuildDir))
-        .pipe(gulpif(global.isWatching, browserSync.reload({
-            stream: true
-        })));
+        .pipe(gulp.dest(cssBuildDir));
+});
+
+gulp.task('css-concat', function(){
+    gulp.src(cssBuild)
+        .pipe(concat(cssDestFile))
+        .pipe(gulp.dest(cssDestDir))
+        .pipe(gulpif(global.isWatching, browserSync.reload({stream:true})));
 });
 
 gulp.task('css-config', function(){
@@ -128,11 +137,37 @@ gulp.task('css-config', function(){
         .pipe(jSass({
           sass: false
         }))
-        .pipe(rename('variables.scss'))
+        .pipe(rename('_variables.scss'))
         .pipe(gulp.dest(cssSrcDir));
 });
 
-gulp.task('css-min', function(){
+gulp.task('css-lint', function(){
+    var errorCount = 0;
+    return gulp.src(cssWatch)
+        .pipe(plumber({
+            errorHandler: function(error) {
+                console.log(error.message);
+                browserSync.notify(error.message, errorTimeout);
+                this.emit('end');
+            }
+        }))
+        .pipe(gulpif(global.isWatching, cached('css-lint')))
+        .pipe(sassLint())
+        .pipe(plumber.stop())
+        .pipe(sassLint.format())
+        .pipe(sassLint.failOnError())
+        .pipe(intercept(function(file) {
+            errorCount = errorCount + file.sassLint.errorCount;
+            return file;
+        }))
+        .on('end', function(){
+            if(errorCount === 0){
+                runSequence('css-compile', 'css-concat');
+            }
+        });
+});
+
+gulp.task('css-minify', function(){
     return gulp.src(cssDestDir+cssDestFile)
         .pipe(rename({
             suffix: '.min'
@@ -141,10 +176,21 @@ gulp.task('css-min', function(){
         .pipe(gulp.dest(cssDestDir));
 });
 
-gulp.task('css-new', function(){
-    var cssBuildArr = cssLib.concat(cssWatch);
-    return gulp.src(cssBuildArr)
-        .pipe(sass({includePaths: cssBuildArr, errLogToConsole: true }))
+gulp.task('css-import', function() {
+    var imports = "";
+    for(var i=0; i < configJSON.css.libraries.length; i++){
+        var cssLib = configJSON.css.libraries[i];
+        imports += '@import "../../'+cssLib+'";\n';
+    }
+
+    return gulp.src(tmplDir+'scss/libraries.scss')
+        .pipe(replace('@@{libraries}', imports))
+        .pipe(gulp.dest(cssSrcDir));
+});
+
+gulp.task('css-lib', function() {
+    return gulp.src(cssSrcDir+'libraries.scss')
+        .pipe(sass())
         .pipe(gulp.dest(cssBuildDir));
 });
 
@@ -186,15 +232,12 @@ gulp.task('html', function () {
                 this.emit('end');
             }
         }))
-        .pipe(changed(htmlDir, {extension: '.html'}))
+        .pipe(gulpif(global.isWatching,  cached('html-compile')))
         .pipe(jade({
             locals: configJSON,
             pretty: true
         }))
-        .pipe(gulp.dest(htmlDir))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        .pipe(gulp.dest(htmlDir));
 });
 
 gulp.task('html-build', function(){
@@ -221,12 +264,6 @@ gulp.task('html-build', function(){
         .pipe(gulp.dest(htmlDir));
 });
 
-gulp.task('html-jade', function(){
-    gulp.src(htmlDir+'**/*.html')
-        .pipe(html2jade({nbspaces:4, donotencode: true, bodyless: true}))
-        .pipe(gulp.dest(htmlSrcDir));
-});
-
 gulp.task('html-template', function(){
     return gulp.src(htmlSrcDir+htmlSrcFile)
         .pipe(jade({
@@ -241,20 +278,19 @@ gulp.task('html-template', function(){
 });
 
 gulp.task('js-build', function(){
-    runSequence('js-config', 'js-lint', 'js-compile', 'js-concat', 'js-minify');
+    runSequence('js-config', 'js-lint', 'js-compile', 'js-concat');
 });
 
-gulp.task('js-compile', function () { 
-    var compileWatch = jsWatch;       
-    compileWatch.push('src/tsd/**/*.ts');         
-    var tsResult = gulp.src(compileWatch)
+gulp.task('js-compile', function () {              
+    var tsResult = gulp.src(jsWatch)
         .pipe(gulpif(global.isWatching, plumber({
             errorHandler: function(error) {
                 browserSync.notify(error.message, errorTimeout);
                 this.emit('end');
             }
         })))
-        .pipe(gulpif(global.isWatching, changed(jsBuildDir, {extension: '.js'})))
+        .pipe(gulpif(global.isWatching,  cached('js-compile')))
+        .pipe(addsrc('src/tsd/**/*.d.ts'))
         .pipe(ts({
             "compilerOptions": {
                 "target": "es5",
@@ -279,7 +315,30 @@ gulp.task('js-config', function(){
         .pipe(gulp.dest(jsBuildDir));
 });
 
-gulp.task('js-min', function(){
+gulp.task('js-lint', function(){
+    var errorCount = 0;
+    return gulp.src(jsWatch)
+        .pipe(gulpif(global.isWatching, plumber({
+            errorHandler: function(error) {
+                browserSync.notify(error.message, errorTimeout);
+                this.emit('end');
+            }
+        })))
+        .pipe(gulpif(global.isWatching,  cached('js-lint')))
+        .pipe(tslint())
+        .pipe(tslint.report('prose'))
+        .pipe(intercept(function(file) {
+            errorCount = errorCount + file.tslint.failureCount;
+            return file;
+        }))
+        .on('end', function(){
+            if(errorCount === 0){
+                runSequence('js-compile', 'js-concat', 'sync-reload');
+            }
+        });
+});
+
+gulp.task('js-minify', function(){
     return gulp.src(jsDestDir+jsDestFile)
         .pipe(plumber({
             errorHandler: function(error) {
@@ -304,7 +363,7 @@ gulp.task('install', function(){
 });
 
 gulp.task('minify', function(){
-    runSequence('css-min', 'js-min');
+    runSequence('css-min', 'js-minify');
 });
 
 gulp.task('set-vars', setVars);
@@ -335,8 +394,11 @@ gulp.task('watch', function(){
     gulp.watch(configFile, function(){
         runSequence('set-vars', 'config', 'html-build', 'js-build', 'css-build');
     });
-    gulp.watch(cssWatch, ['css-build']);
+    gulp.watch(cssWatch, ['css-lint']);
     gulp.watch(jsWatch, ['js-lint']);
+    gulp.watch(jsLib, function(){
+        runSequence('js-concat', 'sync-reload');
+    });
     gulp.watch(htmlWatch, ['html']);
     gulp.watch(imgWatch, ['icon']);
 });

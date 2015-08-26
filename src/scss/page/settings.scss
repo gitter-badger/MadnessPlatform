@@ -1,13 +1,13 @@
+// IMPORTS
+@import "../mixin/grid";
+
+// PAGE STYLES
 .state-settings{
 	aside{
 		@include column(3);
 	}
 	article{
 		@include column(9);
-	}
-
-	@media (max-width: $screen-xl) {
-
 	}
 
 	@media (max-width: $screen-lg) {
