@@ -11291,11 +11291,11 @@ a.button {
   content: ""; }
 
 body {
-  width: 100%;
-  *zoom: 1; }
+  zoom: 1;
+  width: 100%; }
   body:before,
   body:after {
-    content: "";
+    content: '';
     display: table; }
   body:after {
     clear: both; }
@@ -11348,8 +11348,8 @@ body {
     width: 97.91667%;
     margin: 0 1.04167%; }
   .state-settings article {
-    padding-top: 30px;
     display: inline;
     float: left;
     width: 97.91667%;
-    margin: 0 1.04167%; } }
+    margin: 0 1.04167%;
+    padding-top: 30px; } }

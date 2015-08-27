@@ -1,9 +1,0 @@
-@mixin gradient-trans($color-top:#fff, $color-bottom: $color-top, $alpha-top:0, $alpha-bottom:1, $start:0%, $end:100%){
-	background: -moz-linear-gradient(top,  rgba(red($color-top), green($color-top), blue($color-top), $alpha-top) $start, rgba(red($color-bottom), green($color-bottom), blue($color-bottom), $alpha-bottom) $end);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(142,142,142,0)), color-stop(100%,rgba(142,142,142,0.65)));
-    background: -webkit-linear-gradient(top,  rgba(142,142,142,0) 0%,rgba(red($color-bottom), green($color-bottom), blue($color-bottom), $alpha-bottom) $end);
-    background: -o-linear-gradient(top,  rgba(142,142,142,0) 0%,rgba(red($color-bottom), green($color-bottom), blue($color-bottom), $alpha-bottom) $end);
-    background: -ms-linear-gradient(top,  rgba(142,142,142,0) 0%,rgba(red($color-bottom), green($color-bottom), blue($color-bottom), $alpha-bottom) $end);
-    background: linear-gradient(top bottom,  rgba(142,142,142,0) 0%,rgba(red($color-bottom), green($color-bottom), blue($color-bottom), $alpha-bottom) $end);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color-top', endColorstr='$color-bottom',GradientType=0 );
-}

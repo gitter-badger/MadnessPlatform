@@ -9,6 +9,7 @@ var addsrc       = require('gulp-add-src'),
     data         = require('gulp-data'),
     favicons     = require('gulp-favicons'),
     fs           = require('fs'),
+    filter       = require('gulp-filter'),
     gulp         = require('gulp'),
     gulpif       = require('gulp-if'),
     intercept    = require('gulp-intercept'),
@@ -24,8 +25,8 @@ var addsrc       = require('gulp-add-src'),
     replace      = require('gulp-replace'),
     runSequence  = require('run-sequence'),
     sass         = require('gulp-sass'),
+    sassInherit  = require('gulp-sass-inheritance'),
     scsslint     = require('gulp-scss-lint'),
-    stylish      = require('gulp-scss-lint-stylish2'),
     superstatic  = require('superstatic'),
     ts           = require('gulp-typescript'),
     tslint       = require('gulp-tslint'),
@@ -115,7 +116,6 @@ gulp.task('css-build', function(){
 });
 
 gulp.task('css-compile', function(){
-    var errorCount = 0;
     return gulp.src(cssWatch)
         .pipe(plumber({
             errorHandler: function(error) {
@@ -124,14 +124,17 @@ gulp.task('css-compile', function(){
                 this.emit('end');
             }
         }))
-        .pipe(cached('css-compile'))
+        /*.pipe(cached('css-compile'))
+        .pipe(sassInherit({dir: cssSrcDir}))
+        .pipe(filter(function (file) {
+            return !/\/_/.test(file.path) || !/^_/.test(file.relative);
+        }))*/
+        .pipe(intercept(function(file) {
+            console.log('Compiling: '+path.relative(__dirname, file.path));
+            return file;
+        }))
         .pipe(sass())
-        .pipe(gulp.dest(cssBuildDir))
-        .on('end', function(){
-            if(errorCount === 0){
-                runSequence('css-compile', 'css-concat');
-            }
-        });
+        .pipe(gulp.dest(cssBuildDir));
 });
 
 gulp.task('css-concat', function(){
@@ -157,7 +160,6 @@ gulp.task('css-config', function(){
 
 gulp.task('css-lint', function(){
     var errorCount   = 0,
-        reporter     = stylish()
         errorMessage = [];
     return gulp.src(cssWatch)
         .pipe(plumber({
@@ -169,12 +171,10 @@ gulp.task('css-lint', function(){
         }))
         .pipe(cached('css-lint'))
         .pipe(scsslint({ 
-            customReport: reporter.issues, 
-            config: cssLint, 
-            endless: true 
+            config: cssLint
         }))
-        .pipe(reporter.printSummary)
         .pipe(intercept(function(file) {
+            console.log('Linting: '+path.relative(__dirname, file.path));
             errorMessage.push('<b>'+path.relative(__dirname, file.path)+'</b>');
             for(var i = 0; i < file.scsslint.issues.length; i++){
                 if(file.scsslint.issues[i].severity === 'error'){
@@ -184,14 +184,11 @@ gulp.task('css-lint', function(){
             errorCount = errorCount + file.scsslint.errors;
             return file;
         }))
-        .pipe(scsslint.failReporter())
         .on('end', function(){
             if(errorCount === 0 && global.isWatching && global.synced){
                 runSequence('css-compile', 'css-concat');
             }else if(errorCount > 0 && global.isWatching && global.synced){
                 browserSync.notify(errorMessage.join("<br />"), errorTimeout);
-            }else if(errorCount > 0){
-                console.log(errorMessage.join("\n"));
             }
         });
 });

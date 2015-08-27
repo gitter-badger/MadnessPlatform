@@ -66,7 +66,8 @@
         ],
         "watch": [
             "src/scss/**/*.scss",
-            "!src/scss/libraries.scss"
+            "!src/scss/libraries.scss",
+            "!src/scss/_variables.scss"
         ]
     },
     "js": {
