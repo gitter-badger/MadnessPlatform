@@ -29,6 +29,7 @@ var addsrc       = require('gulp-add-src'),
     scsslint     = require('gulp-scss-lint'),
     superstatic  = require('superstatic'),
     ts           = require('gulp-typescript'),
+    tsd          = require('gulp-tsd'),
     tslint       = require('gulp-tslint'),
     uglify       = require('gulp-uglify');
 
@@ -393,6 +394,7 @@ gulp.task('fonts', function(){
 gulp.task('install', function(){
     runSequence(
         'bower',
+        'tsd',
         'fonts',
         'favicon',
         'icon-copy', 
@@ -442,6 +444,13 @@ gulp.task('sync', function(){
 
 gulp.task('sync-reload', function(){
     browserSync.reload();
+});
+
+gulp.task('tsd', function (callback) {
+    tsd({
+        command: 'reinstall',
+        config: './tsd.json'
+    }, callback);
 });
 
 gulp.task('watch', function(){
