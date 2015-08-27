@@ -391,7 +391,25 @@ gulp.task('fonts', function(){
 });
 
 gulp.task('install', function(){
-    runSequence('bower', 'fonts', 'build', 'sync', 'watch');
+    runSequence(
+        'bower',
+        'fonts',
+        'favicon',
+        'icon-copy', 
+        'config',
+        'html-template',
+        'html-build', 
+        'css-import', 
+        'css-lib', 
+        'css-lint', 
+        'css-compile', 
+        'css-concat', 
+        'js-lint', 
+        'js-compile', 
+        'js-concat', 
+        'sync', 
+        'watch'
+    );
 });
 
 gulp.task('lint', function(){
