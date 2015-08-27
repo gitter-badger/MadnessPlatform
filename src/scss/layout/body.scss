@@ -1,6 +1,6 @@
 @import '../mixin/clearfix';
 
-body{
-	width: 100%
+body {
+	width: 100%;
 	@include clearfix();
 }
